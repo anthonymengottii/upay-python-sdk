@@ -1,3 +1,11 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="logo/light.png">
+    <source media="(prefers-color-scheme: light)" srcset="logo/dark.png">
+    <img src="logo/dark.png" alt="Upay" height="60">
+  </picture>
+</p>
+
 # Upay Python SDK
 
 SDK oficial da Upay para Python - Integração fácil com a API de pagamentos.
