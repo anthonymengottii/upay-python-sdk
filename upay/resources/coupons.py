@@ -53,7 +53,7 @@ class CouponsResource:
             # Prepara dados - productIds deve ser array (mesmo que vazio)
             data = {
                 "code": code.strip(),
-                "amountCents": amount_cents,
+                "amount": amount_cents,
                 "productIds": product_ids if product_ids else [],
             }
             
@@ -66,11 +66,17 @@ class CouponsResource:
                 timeout=self.http.timeout
             )
             
-            if not response.ok:
-                error = response.json() if response.headers.get("content-type", "").startswith("application/json") else {"message": "Erro ao validar cupom"}
-                raise Exception(error.get("message") or f"HTTP {response.status_code}")
-            
-            result = response.json()
+            try:
+                result = response.json()
+            except Exception:
+                result = None
+
+            if not result:
+                raise Exception(f"HTTP {response.status_code}")
+
+            # 400 com { valid: false } é uma resposta válida (cupom inválido/não encontrado)
+            if not response.ok and result.get("valid") is None:
+                raise Exception(result.get("message") or result.get("error") or f"HTTP {response.status_code}")
             
             # Normalizar resposta para o formato esperado
             return {

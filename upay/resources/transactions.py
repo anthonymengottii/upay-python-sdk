@@ -80,7 +80,11 @@ class TransactionsResource:
             "clientId": client_id,
         }
         
-        return self.http.get("/transactions", params)
+        response = self.http.get("/transactions", params)
+        return {
+            "data": response.get("transactions") or response.get("data") or [],
+            "pagination": response.get("pagination") or {"total": 0, "page": 1, "limit": 10},
+        }
     
     def get(self, transaction_id: str) -> Dict[str, Any]:
         """
