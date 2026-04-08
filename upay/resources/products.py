@@ -65,13 +65,7 @@ class ProductsResource:
             "orderDirection": order_direction,
         }
         
-        response = self.http.get("/products", params)
-        
-        # Mapear resposta: { message, products, pagination } -> { data, pagination }
-        return {
-            "data": response.get("products") or response.get("data") or [],
-            "pagination": response.get("pagination") or {"total": 0, "page": 1, "limit": 10}
-        }
+        return self.http.get("/products", params)
     
     def get(self, product_id: str) -> Dict[str, Any]:
         """

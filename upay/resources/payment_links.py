@@ -60,10 +60,7 @@ class PaymentLinksResource:
         # Remove valores None
         request_data = {k: v for k, v in request_data.items() if v is not None}
         
-        response = self.http.post("/payment-links", request_data)
-        
-        # Mapear resposta: { message, data } -> retornar data
-        return response.get("data") or response
+        return self.http.post("/payment-links", request_data)
     
     def list(
         self,
@@ -97,13 +94,7 @@ class PaymentLinksResource:
             "status": status,
         }
         
-        response = self.http.get("/payment-links", params)
-        
-        # Mapear resposta: { message, paymentLinks, pagination } -> { data, pagination }
-        return {
-            "data": response.get("paymentLinks") or response.get("data") or [],
-            "pagination": response.get("pagination") or {"total": 0, "page": 1, "limit": 10}
-        }
+        return self.http.get("/payment-links", params)
     
     def get(self, link_id: str) -> Dict[str, Any]:
         """
@@ -118,10 +109,7 @@ class PaymentLinksResource:
         if not link_id:
             raise ValueError("ID é obrigatório")
         
-        response = self.http.get(f"/payment-links/{link_id}")
-        
-        # Mapear resposta: { message, paymentLink } -> retornar paymentLink
-        return response.get("paymentLink") or response.get("data") or response
+        return self.http.get(f"/payment-links/{link_id}")
     
     def get_by_slug(self, slug: str) -> Dict[str, Any]:
         """

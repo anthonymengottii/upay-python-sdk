@@ -88,7 +88,15 @@ class HttpClient:
             # Verifica se houve erro
             if not response.ok:
                 raise handle_api_error(response, body)
-            
+
+            # Desempacota o envelope padrão: { success: true, data: X, pagination?: Y }
+            if isinstance(body, dict) and body.get('success') is True and 'data' in body:
+                if 'pagination' in body:
+                    return {'data': body['data'], 'pagination': body['pagination']}
+                if 'meta' in body:
+                    return {'data': body['data'], 'meta': body['meta']}
+                return body['data']
+
             return body
             
         except requests.exceptions.RequestException as e:
